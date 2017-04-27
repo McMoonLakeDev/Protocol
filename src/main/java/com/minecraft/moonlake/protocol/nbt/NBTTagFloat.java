@@ -65,11 +65,6 @@ public class NBTTagFloat extends NBTBase {
     }
 
     @Override
-    public boolean isNumber() {
-        return true;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if(super.equals(obj)) {
             NBTTagFloat other = (NBTTagFloat) obj;

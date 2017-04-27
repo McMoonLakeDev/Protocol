@@ -65,11 +65,6 @@ public class NBTTagLong extends NBTBase {
     }
 
     @Override
-    public boolean isNumber() {
-        return true;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         if(super.equals(obj)) {
             NBTTagLong other = (NBTTagLong) obj;
