@@ -19,16 +19,18 @@
 package com.minecraft.moonlake.protocol.test;
 
 import com.minecraft.moonlake.protocol.data.MinecraftProtocolType;
+import com.minecraft.moonlake.protocol.data.MinecraftProtocolVersion;
 import com.minecraft.moonlake.protocol.data.play.entity.player.PositionFlag;
 import com.minecraft.moonlake.protocol.mc.MinecraftClient;
+import com.minecraft.moonlake.protocol.mc.MinecraftClientProtocol;
 import com.minecraft.moonlake.protocol.mc.MinecraftConnection;
-import com.minecraft.moonlake.protocol.mc.MinecraftProtocol;
 import com.minecraft.moonlake.protocol.mc.connect.DefaultConnectionFactory;
 import com.minecraft.moonlake.protocol.mc.connect.event.DisconnectedEvent;
 import com.minecraft.moonlake.protocol.mc.connect.event.PacketReceivedEvent;
 import com.minecraft.moonlake.protocol.mc.connect.event.PacketSentEvent;
 import com.minecraft.moonlake.protocol.mc.connect.event.client.ClientConnectionListenerAdapter;
 import com.minecraft.moonlake.protocol.mc.connect.event.client.ConnectedServerEvent;
+import com.minecraft.moonlake.protocol.mc.connect.event.client.ServerPingEvent;
 import com.minecraft.moonlake.protocol.nbt.NBTTagCompound;
 import com.minecraft.moonlake.protocol.nbt.NBTTagList;
 import com.minecraft.moonlake.protocol.packet.play.client.ClientChatMessagePacket;
@@ -36,6 +38,7 @@ import com.minecraft.moonlake.protocol.packet.play.client.player.ClientPlayerPos
 import com.minecraft.moonlake.protocol.packet.play.client.world.ClientTeleportConfirmPacket;
 import com.minecraft.moonlake.protocol.packet.play.server.ServerChatMessagePacket;
 import com.minecraft.moonlake.protocol.packet.play.server.entity.player.ServerPlayerPositionAndLookPacket;
+import com.minecraft.moonlake.protocol.packet.play.server.world.ServerChunkDataPacket;
 import com.minecraft.moonlake.protocol.util.Util;
 
 import javax.swing.*;
@@ -59,19 +62,46 @@ public class MoonLakeProtocolTest {
     static float prevPitch;
 
     public static void main(String[] args) {
-        testClientConnect("localhost", 29999, MinecraftProtocolType.LOGIN);
+
+        // 测试客户端向指定服务器发送 ping 请求
+        MinecraftClientProtocol protocol = new MinecraftClientProtocol(MinecraftProtocolType.STATUS, MinecraftProtocolVersion.LATEST);
+        testClientPing("mc.hypixel.net", 25565, protocol);
+        // 测试向哈皮咳嗽发送服务器状态信息获取, 获取非常成功. 北京时间: 2017/04/29 21:20:36
+        // ServerStatusInfo{versionInfo=VersionInfo{name='Requires MC 1.8/1.9/1.10/1.11', protocol=316}, playerInfo=PlayerInfo{max=61616, online=47505, players=[]}, description='"            §aHypixel Network §7§c1.8/1.9/1.10/1.11\n               §e§lNEW!!! §b§lBED WARS UPDATE!"', icon=BufferedImage@2c5f6955]
+
+        // 测试客户端向指定服务器发送加入请求
+//        MinecraftClientProtocol protocol = new MinecraftClientProtocol(MinecraftProtocolType.LOGIN, MinecraftProtocolVersion.LATEST);
+//        testClientConnect("localhost", 29999, protocol);
     }
 
-    static void testClientConnect(String host, int port, MinecraftProtocolType protocolType) {
+    static void testClientPing(String host, int port, MinecraftClientProtocol protocol) {
+        MinecraftClient client = new MinecraftClient(host, port, protocol, new DefaultConnectionFactory());
+        client.getConnection().addListener(new ClientConnectionListenerAdapter() {
+            @Override
+            public void onServerPing(ServerPingEvent event) {
+                System.out.println("[ServerPingEvent]: " + event.getStatusInfo());
+            }
+
+            @Override
+            public void onDisconnected(DisconnectedEvent event) {
+                System.out.println("连接断开: " + event.getReason());
+                if(event.getCause() != null)
+                    event.getCause().printStackTrace();
+            }
+        });
+        client.connect();
+    }
+
+    static void testClientConnect(String host, int port, MinecraftClientProtocol protocol) {
         // 创建一个 Minecraft 客户端对象并添加数据监听器
-        MinecraftClient client = new MinecraftClient(host, port, new MinecraftProtocol(protocolType == null ? MinecraftProtocolType.STATUS : protocolType), new DefaultConnectionFactory());
+        MinecraftClient client = new MinecraftClient(host, port, protocol, new DefaultConnectionFactory());
         client.getConnection().addListener(new ClientConnectionListenerAdapter() {
             @Override
             public void onReceived(PacketReceivedEvent event) {
                 // 处理数据包接收事件
 
-//                if(debug && !(event.getPacket() instanceof ServerChunkDataPacket))
-//                    System.out.println("[Debug][PacketIn]: " + event.getPacket().toString());
+                if(debug && !(event.getPacket() instanceof ServerChunkDataPacket))
+                    System.out.println("[Debug][PacketIn]: " + event.getPacket().toString());
 
                 // 如果数据包为服务器聊天消息则打印在控制台
                 if(event.getPacket() instanceof ServerChatMessagePacket)
