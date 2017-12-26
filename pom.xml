@@ -9,7 +9,7 @@
     <artifactId>ProtocolParent</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
-    <description>A MoonLake Protocol Library for Minecraft</description>
+    <description>A MoonLake Protocol Library for Minecraft Protocol</description>
     <url>https://github.com/McMoonLakeDev/Protocol</url>
 
     <issueManagement>
