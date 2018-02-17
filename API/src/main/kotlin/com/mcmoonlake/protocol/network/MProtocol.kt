@@ -19,6 +19,13 @@ package com.mcmoonlake.protocol.network
 
 import com.mcmoonlake.protocol.packet.*
 import com.mcmoonlake.protocol.packet.handshake.CPacketHandshake
+import com.mcmoonlake.protocol.packet.login.CPacketEncryptionResponse
+import com.mcmoonlake.protocol.packet.login.CPacketLoginStart
+import com.mcmoonlake.protocol.packet.login.SPacketEncryptionRequest
+import com.mcmoonlake.protocol.packet.login.SPacketSetCompression
+import com.mcmoonlake.protocol.packet.play.CPacketChatMessage
+import com.mcmoonlake.protocol.packet.play.SPacketKickDisconnect
+import com.mcmoonlake.protocol.packet.play.SPacketLoginSuccess
 import com.mcmoonlake.protocol.packet.status.CPacketStatusPing
 import com.mcmoonlake.protocol.packet.status.CPacketStatusStart
 import com.mcmoonlake.protocol.packet.status.SPacketStatusPong
@@ -41,7 +48,7 @@ open class MProtocol(
         get() = encryption0
 
     @Throws(Throwable::class)
-    open protected fun enableEncryption(key: Key) = try {
+    fun enableEncryption(key: Key) = try {
         encryption0 = PacketEncryptionAES(key)
     } catch (e: GeneralSecurityException) {
         throw Error("Could not enable encryption protocol.", e)
@@ -71,10 +78,16 @@ open class MProtocol(
         registerOutgoingPacket(0x01, CPacketStatusPing::class.java)
     }
     private fun initLogin(connection: MConnection, isClient: Boolean) {
-        // TODO Login
+        registerIncomingPacket(0x00, SPacketKickDisconnect::class.java)
+        registerIncomingPacket(0x01, SPacketEncryptionRequest::class.java)
+        registerIncomingPacket(0x02, SPacketLoginSuccess::class.java)
+        registerIncomingPacket(0x03, SPacketSetCompression::class.java)
+        registerOutgoingPacket(0x00, CPacketLoginStart::class.java)
+        registerOutgoingPacket(0x01, CPacketEncryptionResponse::class.java)
     }
     private fun initPlay(connection: MConnection, isClient: Boolean) {
         // TODO Play
+        registerOutgoingPacket(0x02, CPacketChatMessage::class.java)
     }
 }
 

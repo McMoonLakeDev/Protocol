@@ -18,11 +18,14 @@
 package com.mcmoonlake.protocol.client.network
 
 import com.mcmoonlake.protocol.api.Minecraft
+import com.mcmoonlake.protocol.chat.ChatComponent
+import com.mcmoonlake.protocol.chat.ChatSerializer
 import com.mcmoonlake.protocol.client.MClient
 import com.mcmoonlake.protocol.network.MConnectionAbstract
 import com.mcmoonlake.protocol.packet.PacketCodecHandler
 import com.mcmoonlake.protocol.packet.PacketEncryptionHandler
 import com.mcmoonlake.protocol.packet.PacketSizerHandler
+import com.mcmoonlake.protocol.packet.play.CPacketChatMessage
 import io.netty.bootstrap.Bootstrap
 import io.netty.channel.Channel
 import io.netty.channel.ChannelInitializer
@@ -50,6 +53,12 @@ open class MClientConnection(
         setProperty(Minecraft.KEY_PROTOCOL_VER, protocol.version)
         setProperty(Minecraft.KEY_PROFILE, protocol.profile)
     }
+
+    fun chat(message: String)
+            = chat(ChatSerializer.fromRaw(message))
+
+    fun chat(message: ChatComponent)
+            = sendPacket(CPacketChatMessage(message))
 
     override fun connect(wait: Boolean) {
         super.connect(wait)

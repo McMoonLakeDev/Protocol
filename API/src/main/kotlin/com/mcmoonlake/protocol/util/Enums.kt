@@ -24,7 +24,7 @@ object Enums {
 
     @JvmStatic
     private val classEnumConstantDirectory: Method by lazy {
-        val method = Class::class.java.getMethod("enumConstantDirectory")
+        val method = Class::class.java.getDeclaredMethod("enumConstantDirectory")
         if(!method.isAccessible)
             method.isAccessible = true
         method
