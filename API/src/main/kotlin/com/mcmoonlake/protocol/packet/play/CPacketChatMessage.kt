@@ -24,7 +24,9 @@ import com.mcmoonlake.protocol.packet.PacketBuffer
 import com.mcmoonlake.protocol.packet.PacketClient
 
 data class CPacketChatMessage(
-        var message: ChatComponent) : PacketAbstract(), PacketClient {
+        var message: ChatComponent
+) : PacketAbstract(),
+        PacketClient {
 
     constructor() : this(ChatComponent.NULL)
     constructor(message: String) : this(ChatSerializer.fromRaw(message))

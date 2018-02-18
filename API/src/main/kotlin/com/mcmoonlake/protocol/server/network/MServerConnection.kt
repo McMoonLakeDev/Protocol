@@ -22,5 +22,6 @@ import com.mcmoonlake.protocol.network.MConnectionAbstract
 class MServerConnection(
         override val host: String,
         override val port: Int,
-        override val protocol: MServerProtocol) : MConnectionAbstract(host, port, protocol) {
+        override val protocol: MServerProtocol
+) : MConnectionAbstract(host, port, protocol) {
 }

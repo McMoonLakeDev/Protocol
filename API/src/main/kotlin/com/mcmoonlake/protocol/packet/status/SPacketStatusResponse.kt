@@ -23,7 +23,9 @@ import com.mcmoonlake.protocol.packet.PacketServer
 import com.mcmoonlake.protocol.wrapper.ServerInfo
 
 data class SPacketStatusResponse(
-        var info: ServerInfo) : PacketAbstract(), PacketServer {
+        var info: ServerInfo
+) : PacketAbstract(),
+        PacketServer {
 
     constructor() : this(ServerInfo.SAMPLE)
 

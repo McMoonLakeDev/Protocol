@@ -23,5 +23,6 @@ import com.mcmoonlake.protocol.network.MProtocolVersion
 
 class MServerProtocol(
         type: MProtocolType,
-        version: MProtocolVersion) : MProtocol(type, version) {
+        version: MProtocolVersion
+) : MProtocol(type, version) {
 }

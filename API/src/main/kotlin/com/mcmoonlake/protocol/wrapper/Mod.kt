@@ -19,7 +19,10 @@ package com.mcmoonlake.protocol.wrapper
 
 import com.mcmoonlake.protocol.util.ComparisonChain
 
-data class Mod(val modid: String, val version: String) : Comparable<Mod> {
+data class Mod(
+        val modid: String,
+        val version: String
+) : Comparable<Mod> {
 
     override fun compareTo(other: Mod): Int {
         return ComparisonChain.start()

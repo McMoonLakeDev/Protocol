@@ -15,22 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.mcmoonlake.protocol.server
+package com.mcmoonlake.protocol
 
-import com.mcmoonlake.protocol.api.MinecraftServer
-import com.mcmoonlake.protocol.server.network.MServerConnection
-import com.mcmoonlake.protocol.server.network.MServerConnectionFactory
-import com.mcmoonlake.protocol.server.network.MServerProtocol
+object Contents {
 
-class MServer(
-        override val host: String,
-        override val port: Int,
-        override val protocol: MServerProtocol,
-        factory: MServerConnectionFactory
-) : MinecraftServer {
-
-    private val serverConnection = factory.createServerConnection(this)
-
-    override val connection: MServerConnection
-        get() = serverConnection as MServerConnection
+    /**
+     * The default channel for the protocol.
+     */
+    const val CHANNEL = "MoonLake|Protocol"
 }

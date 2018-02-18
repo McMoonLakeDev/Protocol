@@ -19,14 +19,29 @@ package com.mcmoonlake.protocol.network
 
 interface MConnectionListener {
 
+    /**
+     * When receiving data packets.
+     */
     fun onReceiving(event: PacketReceivingEvent)
 
+    /**
+     * When sending data packets.
+     */
     fun onSending(event: PacketSendingEvent)
 
+    /**
+     * When sending plug-in messages.
+     */
     fun onPayload(event: PacketPayloadEvent)
 
+    /**
+     * When connected successfully.
+     */
     fun onConnected(event: ConnectedEvent)
 
+    /**
+     * When disconnected.
+     */
     fun onDisconnected(event: DisconnectedEvent)
 }
 

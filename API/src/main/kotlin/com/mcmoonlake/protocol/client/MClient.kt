@@ -26,7 +26,8 @@ class MClient(
         override val host: String,
         override val port: Int,
         override val protocol: MClientProtocol,
-        factory: MClientConnectionFactory) : Minecraft {
+        factory: MClientConnectionFactory
+) : Minecraft {
 
     private val clientConnection = factory.createClientConnection(this)
 

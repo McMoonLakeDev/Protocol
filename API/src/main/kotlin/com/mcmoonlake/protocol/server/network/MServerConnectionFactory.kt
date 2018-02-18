@@ -23,7 +23,9 @@ import com.mcmoonlake.protocol.network.MConnectionFactoryAbstract
 import com.mcmoonlake.protocol.server.MServer
 import java.net.Proxy
 
-class MServerConnectionFactory(proxy: Proxy?) : MConnectionFactoryAbstract(proxy) {
+class MServerConnectionFactory(
+        proxy: Proxy?
+) : MConnectionFactoryAbstract(proxy) {
 
     override fun createClientConnection(mc: Minecraft): MConnection
             = throw UnsupportedOperationException()

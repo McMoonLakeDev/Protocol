@@ -17,15 +17,18 @@
 
 package com.mcmoonlake.protocol.packet.play
 
+import com.mcmoonlake.protocol.Contents
 import com.mcmoonlake.protocol.packet.PacketAbstract
 import com.mcmoonlake.protocol.packet.PacketBuffer
 import com.mcmoonlake.protocol.packet.PacketServer
 
 data class SPacketPayload(
         var channel: String,
-        var data: PacketBuffer) : PacketAbstract(), PacketServer {
+        var data: PacketBuffer
+) : PacketAbstract(),
+        PacketServer {
 
-    constructor() : this("MoonLake", PacketBuffer.EMPTY)
+    constructor() : this(Contents.CHANNEL, PacketBuffer.EMPTY)
 
     override fun read(data: PacketBuffer) {
         channel = data.readString()

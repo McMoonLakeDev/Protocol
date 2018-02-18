@@ -34,7 +34,9 @@ interface PacketEncryption {
     fun encrypt(input: ByteArray, inOffset: Int, inLength: Int, output: ByteArray, outOffset: Int): Int
 }
 
-class PacketEncryptionAES(key: Key) : PacketEncryption {
+class PacketEncryptionAES(
+        key: Key
+) : PacketEncryption {
 
     private val inCipher = Cipher.getInstance("AES/CFB8/NoPadding")
     private val outCipher = Cipher.getInstance("AES/CFB8/NoPadding")

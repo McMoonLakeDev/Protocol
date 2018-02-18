@@ -23,12 +23,16 @@ import com.mcmoonlake.protocol.auth.GameProfile
 import com.mcmoonlake.protocol.network.MProtocol
 import com.mcmoonlake.protocol.network.MProtocolType
 import com.mcmoonlake.protocol.network.MProtocolVersion
+import java.util.*
 
 class MClientProtocol(
         type: MProtocolType,
         version: MProtocolVersion,
-        val profile: GameProfile) : MProtocol(type, version) {
+        val profile: GameProfile
+) : MProtocol(type, version) {
 
-    constructor(type: MProtocolType, version: MProtocolVersion, username: String) : this(type, version, GameProfile(null, username))
-    constructor(type: MProtocolType, version: MProtocolVersion) : this(type, version, GameProfile(DEF_UUID, DEF_NAME))
+    constructor(type: MProtocolType, version: MProtocolVersion, username: String)
+            : this(type, version, GameProfile(null as UUID?, username))
+    constructor(type: MProtocolType, version: MProtocolVersion)
+            : this(type, version, GameProfile(DEF_UUID, DEF_NAME))
 }

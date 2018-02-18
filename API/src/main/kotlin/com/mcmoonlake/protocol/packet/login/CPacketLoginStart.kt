@@ -24,7 +24,9 @@ import com.mcmoonlake.protocol.packet.PacketClient
 import java.util.*
 
 data class CPacketLoginStart(
-        var profile: GameProfile) : PacketAbstract(), PacketClient {
+        var profile: GameProfile
+) : PacketAbstract(),
+        PacketClient {
 
     constructor() : this(GameProfile(null as UUID?, "Unknown"))
 

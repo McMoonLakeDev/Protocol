@@ -38,7 +38,7 @@ abstract class PacketProtocol {
 
     @Throws(IllegalArgumentException::class)
     fun registerIncomingPacket(packetId: Int, clazz: Class<out Packet>) {
-        incoming.put(packetId, clazz)
+        incoming[packetId] = clazz
         try {
             createIncomingPacket(packetId)
         } catch(e: IllegalStateException) {
@@ -48,7 +48,7 @@ abstract class PacketProtocol {
     }
 
     fun registerOutgoingPacket(packetId: Int, clazz: Class<out Packet>) {
-        outgoing.put(clazz, packetId)
+        outgoing[clazz] = packetId
     }
 
     fun createIncomingPacket(packetId: Int): Packet {

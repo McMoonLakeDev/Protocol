@@ -28,7 +28,8 @@ data class SPacketEncryptionRequest(
         var serverId: String,
         var publicKey: PublicKey,
         var verifyToken: ByteArray
-) : PacketAbstract(), PacketServer {
+) : PacketAbstract(),
+        PacketServer {
 
     constructor() : this("Unknown", EMPTY_KEY, byteArrayOf())
 

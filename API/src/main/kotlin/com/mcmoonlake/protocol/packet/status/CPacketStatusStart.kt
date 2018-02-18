@@ -21,7 +21,9 @@ import com.mcmoonlake.protocol.packet.PacketAbstract
 import com.mcmoonlake.protocol.packet.PacketBuffer
 import com.mcmoonlake.protocol.packet.PacketClient
 
-class CPacketStatusStart : PacketAbstract(), PacketClient {
+class CPacketStatusStart
+    : PacketAbstract(),
+        PacketClient {
 
     override fun read(data: PacketBuffer) {
     }

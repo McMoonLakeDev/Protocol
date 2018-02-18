@@ -17,6 +17,8 @@
 
 package com.mcmoonlake.protocol.packet.handshake
 
+import com.mcmoonlake.protocol.api.Valuable
+import com.mcmoonlake.protocol.ofValuableNotNull
 import com.mcmoonlake.protocol.packet.PacketAbstract
 import com.mcmoonlake.protocol.packet.PacketBuffer
 import com.mcmoonlake.protocol.packet.PacketClient
@@ -25,32 +27,38 @@ data class CPacketHandshake(
         var version: Int,
         var host: String,
         var port: Int,
-        var nextState: Int) : PacketAbstract(), PacketClient {
+        var nextState: HandshakeIntent
+) : PacketAbstract(),
+        PacketClient {
 
-    constructor() : this(-1, "127.0.0.1", 25565, -1)
-    constructor(version: Int, host: String, port: Int, nextState: HandshakeIntent) : this(version, host, port, nextState.value)
+    constructor() : this(-1, "127.0.0.1", 25565, HandshakeIntent.STATUS)
 
     override fun read(data: PacketBuffer) {
         version = data.readVarInt()
         host = data.readString()
         port = data.readUnsignedShort()
-        nextState = data.readVarInt()
+        nextState = ofValuableNotNull(data.readVarInt())
     }
 
     override fun write(data: PacketBuffer) {
         data.writeVarInt(version)
         data.writeString(host)
         data.writeShort(port)
-        data.writeVarInt(nextState)
+        data.writeVarInt(nextState.value())
     }
 
     override val isPriority: Boolean
         get() = true
 }
 
-enum class HandshakeIntent(val value: Int) {
+enum class HandshakeIntent(
+        val value: Int
+) : Valuable<Int> {
 
     STATUS(1),
     LOGIN(2),
     ;
+
+    override fun value(): Int
+            = value
 }

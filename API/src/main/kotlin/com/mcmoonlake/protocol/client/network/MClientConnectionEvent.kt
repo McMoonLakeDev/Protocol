@@ -27,7 +27,8 @@ interface MClientConnectionEvent : ProtocolEvent {
 }
 
 abstract class MClientConnectionEventAbstract(
-        val connection: MClientConnection) : MClientConnectionEvent {
+        val connection: MClientConnection
+) : MClientConnectionEvent {
 
     override fun call(listener: MConnectionListener) {
         if(listener is MClientConnectionListener)
@@ -36,7 +37,9 @@ abstract class MClientConnectionEventAbstract(
 }
 
 class ConnectedServerEvent(
-        connection: MClientConnection) : MClientConnectionEventAbstract(connection),  MClientConnectionEvent {
+        connection: MClientConnection
+) : MClientConnectionEventAbstract(connection),
+        MClientConnectionEvent {
 
     override fun call(listener: MClientConnectionListener) {
         listener.onConnectedServer(this)
@@ -45,7 +48,9 @@ class ConnectedServerEvent(
 
 class ServerPingEvent(
         connection: MClientConnection,
-        val info: ServerInfo) : MClientConnectionEventAbstract(connection), MClientConnectionEvent {
+        val info: ServerInfo
+) : MClientConnectionEventAbstract(connection),
+        MClientConnectionEvent {
 
     override fun call(listener: MClientConnectionListener) {
         listener.onServerPingEvent(this)

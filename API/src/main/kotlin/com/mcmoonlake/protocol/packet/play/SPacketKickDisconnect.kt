@@ -24,7 +24,9 @@ import com.mcmoonlake.protocol.packet.PacketBuffer
 import com.mcmoonlake.protocol.packet.PacketServer
 
 data class SPacketKickDisconnect(
-        var message: ChatComponent) : PacketAbstract(), PacketServer {
+        var message: ChatComponent
+) : PacketAbstract(),
+        PacketServer {
 
     constructor() : this(ChatComponent.NULL)
 

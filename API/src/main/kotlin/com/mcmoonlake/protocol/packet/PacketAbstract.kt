@@ -22,4 +22,3 @@ abstract class PacketAbstract : Packet {
     override val isPriority: Boolean
         get() = false
 }
-

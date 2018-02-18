@@ -24,7 +24,8 @@ import java.net.Proxy
 import java.net.Socket
 
 class MClientChannelFactory(
-        private val proxy: Proxy) : ChannelFactory<Channel> {
+        private val proxy: Proxy
+) : ChannelFactory<Channel> {
 
     override fun newChannel(): Channel
             = OioSocketChannel(Socket(proxy))

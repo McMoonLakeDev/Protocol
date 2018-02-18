@@ -15,22 +15,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.mcmoonlake.protocol.server
+package com.mcmoonlake.protocol.auth
 
-import com.mcmoonlake.protocol.api.MinecraftServer
-import com.mcmoonlake.protocol.server.network.MServerConnection
-import com.mcmoonlake.protocol.server.network.MServerConnectionFactory
-import com.mcmoonlake.protocol.server.network.MServerProtocol
+import java.security.PublicKey
+import java.security.Signature
+import java.util.*
 
-class MServer(
-        override val host: String,
-        override val port: Int,
-        override val protocol: MServerProtocol,
-        factory: MServerConnectionFactory
-) : MinecraftServer {
+data class Property(
+        val name: String,
+        val value: String,
+        val signature: String?) {
 
-    private val serverConnection = factory.createServerConnection(this)
+    fun hasSignature()
+            = signature != null
 
-    override val connection: MServerConnection
-        get() = serverConnection as MServerConnection
+    fun verifySignature(publicKey: PublicKey): Boolean {
+        if(signature == null)
+            return false
+        return try {
+            val sign = Signature.getInstance(publicKey.algorithm)
+            sign.initVerify(publicKey)
+            sign.update(value.toByteArray())
+            sign.verify(Base64.getDecoder().decode(signature.toByteArray(Charsets.UTF_8)))
+        } catch(e: Exception) {
+            false
+        }
+    }
 }

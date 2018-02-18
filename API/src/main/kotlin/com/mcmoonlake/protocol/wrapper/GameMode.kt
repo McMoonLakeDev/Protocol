@@ -15,22 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.mcmoonlake.protocol.server
+package com.mcmoonlake.protocol.wrapper
 
-import com.mcmoonlake.protocol.api.MinecraftServer
-import com.mcmoonlake.protocol.server.network.MServerConnection
-import com.mcmoonlake.protocol.server.network.MServerConnectionFactory
-import com.mcmoonlake.protocol.server.network.MServerProtocol
+import com.mcmoonlake.protocol.api.Valuable
 
-class MServer(
-        override val host: String,
-        override val port: Int,
-        override val protocol: MServerProtocol,
-        factory: MServerConnectionFactory
-) : MinecraftServer {
+enum class GameMode : Valuable<Int> {
 
-    private val serverConnection = factory.createServerConnection(this)
+    SURVIVAL,
+    CREATIVE,
+    ADVENTURE,
+    SPECTATOR,
+    ;
 
-    override val connection: MServerConnection
-        get() = serverConnection as MServerConnection
+    override fun value(): Int
+            = ordinal
 }

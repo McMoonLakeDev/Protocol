@@ -22,7 +22,9 @@ import com.mcmoonlake.protocol.packet.PacketBuffer
 import com.mcmoonlake.protocol.packet.PacketClient
 
 data class CPacketStatusPing(
-        var id: Long) : PacketAbstract(), PacketClient {
+        var id: Long
+) : PacketAbstract(),
+        PacketClient {
 
     constructor() : this(System.currentTimeMillis())
 

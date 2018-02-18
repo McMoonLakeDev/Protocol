@@ -23,7 +23,9 @@ import com.mcmoonlake.protocol.network.MConnection
 import com.mcmoonlake.protocol.network.MConnectionFactoryAbstract
 import java.net.Proxy
 
-open class MClientConnectionFactory(proxy: Proxy?) : MConnectionFactoryAbstract(proxy) {
+open class MClientConnectionFactory(
+        proxy: Proxy?
+) : MConnectionFactoryAbstract(proxy) {
 
     override fun createClientConnection(mc: Minecraft): MConnection
             = MClientConnection(mc.host, mc.port, (mc as MClient).protocol, mc, proxy)

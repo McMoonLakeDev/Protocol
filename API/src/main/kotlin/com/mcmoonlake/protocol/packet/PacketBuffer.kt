@@ -22,7 +22,8 @@ import io.netty.buffer.Unpooled
 import java.nio.charset.Charset
 import java.util.*
 
-data class PacketBuffer(private var byteBuf: ByteBuf) {
+data class PacketBuffer(
+        private var byteBuf: ByteBuf) {
 
     constructor() : this(Unpooled.buffer())
     constructor(buffer: ByteArray) : this(Unpooled.wrappedBuffer(buffer))

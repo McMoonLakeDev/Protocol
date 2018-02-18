@@ -27,7 +27,8 @@ import java.util.*
 data class CPacketEncryptionResponse(
         var sharedKey: ByteArray,
         var verifyToken: ByteArray
-) : PacketAbstract(), PacketClient {
+) : PacketAbstract(),
+        PacketClient {
 
     constructor() : this(byteArrayOf(), byteArrayOf())
 

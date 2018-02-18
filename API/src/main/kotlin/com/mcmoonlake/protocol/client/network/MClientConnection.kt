@@ -43,7 +43,8 @@ open class MClientConnection(
         override val port: Int,
         override val protocol: MClientProtocol,
         protected val client: MClient,
-        private val proxy: Proxy?) : MConnectionAbstract(host, port, protocol) {
+        private val proxy: Proxy?
+) : MConnectionAbstract(host, port, protocol) {
 
     private var group: EventLoopGroup? = null
 

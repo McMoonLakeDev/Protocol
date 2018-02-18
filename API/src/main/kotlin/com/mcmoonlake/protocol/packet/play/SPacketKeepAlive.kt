@@ -25,7 +25,10 @@ import com.mcmoonlake.protocol.packet.PacketServer
 import com.mcmoonlake.protocol.packet.PacketVersion
 
 data class SPacketKeepAlive(
-        var id: Long) : PacketAbstract(), PacketVersion, PacketServer {
+        var id: Long
+) : PacketAbstract(),
+        PacketVersion,
+        PacketServer {
 
     constructor() : this(-1L)
 

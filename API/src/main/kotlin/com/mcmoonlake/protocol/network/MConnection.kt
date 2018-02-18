@@ -69,4 +69,6 @@ interface MConnectionFactory {
     fun createServerConnection(mc: Minecraft): MConnection
 }
 
-abstract class MConnectionFactoryAbstract(val proxy: Proxy?) : MConnectionFactory
+abstract class MConnectionFactoryAbstract(
+        val proxy: Proxy?
+) : MConnectionFactory

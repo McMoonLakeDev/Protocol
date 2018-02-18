@@ -40,3 +40,7 @@ interface Minecraft {
         const val KEY_PROTOCOL_VER = "protocol-version"
     }
 }
+
+interface MinecraftServer : Minecraft {
+
+}

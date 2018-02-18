@@ -17,25 +17,26 @@
 
 package com.mcmoonlake.protocol.network
 
+import com.mcmoonlake.protocol.api.Valuable
 import com.mcmoonlake.protocol.packet.*
 import com.mcmoonlake.protocol.packet.handshake.CPacketHandshake
 import com.mcmoonlake.protocol.packet.login.CPacketEncryptionResponse
 import com.mcmoonlake.protocol.packet.login.CPacketLoginStart
 import com.mcmoonlake.protocol.packet.login.SPacketEncryptionRequest
 import com.mcmoonlake.protocol.packet.login.SPacketSetCompression
-import com.mcmoonlake.protocol.packet.play.CPacketChatMessage
-import com.mcmoonlake.protocol.packet.play.SPacketKickDisconnect
-import com.mcmoonlake.protocol.packet.play.SPacketLoginSuccess
+import com.mcmoonlake.protocol.packet.play.*
 import com.mcmoonlake.protocol.packet.status.CPacketStatusPing
 import com.mcmoonlake.protocol.packet.status.CPacketStatusStart
 import com.mcmoonlake.protocol.packet.status.SPacketStatusPong
 import com.mcmoonlake.protocol.packet.status.SPacketStatusResponse
+import com.mcmoonlake.protocol.util.ComparisonChain
 import java.security.GeneralSecurityException
 import java.security.Key
 
 open class MProtocol(
         type: MProtocolType,
-        val version: MProtocolVersion) : PacketProtocol() {
+        val version: MProtocolVersion
+) : PacketProtocol() {
 
     private var type0: MProtocolType = type
     private var encryption0: PacketEncryption? = null
@@ -87,7 +88,11 @@ open class MProtocol(
     }
     private fun initPlay(connection: MConnection, isClient: Boolean) {
         // TODO Play
+        registerIncomingPacket(0x18, SPacketPayload::class.java)
+        registerIncomingPacket(0x23, SPacketJoinGame::class.java)
+        registerIncomingPacket(0x35, SPacketRespawn::class.java)
         registerOutgoingPacket(0x02, CPacketChatMessage::class.java)
+        registerOutgoingPacket(0x09, CPacketPayload::class.java)
     }
 }
 
@@ -100,35 +105,73 @@ enum class MProtocolType {
     ;
 }
 
-enum class MProtocolVersion(val value: Int) {
+class MProtocolVersion private constructor(
+        val major: Int,
+        val minor: Int,
+        val build: Int,
+        private val protocol: Int
+) : Comparable<MProtocolVersion>,
+        Valuable<Int> {
 
-    V1_12_2(340),
-    V1_12_1(338),
-    V1_12(335),
+    override fun value(): Int
+            = protocol
 
-    V1_11_2(316),
-    V1_11_1(316),
-    V1_11(315),
+    override fun compareTo(other: MProtocolVersion): Int {
+        return ComparisonChain.start()
+                .compare(major, other.major)
+                .compare(minor, other.minor)
+                .compare(build, other.build)
+                .result
+    }
 
-    V1_10_2(210),
-    V1_10_1(210),
-    V1_10(210),
+    override fun hashCode(): Int {
+        var result = major.hashCode()
+        result = 31 * result + minor.hashCode()
+        result = 31 * result + build.hashCode()
+        return result
+    }
 
-    V1_9_4(110),
-    V1_9_3(110),
-    V1_9_2(109),
-    V1_9_1(108),
-    V1_9(107),
+    override fun equals(other: Any?): Boolean {
+        if(other === this)
+            return true
+        if(other is MProtocolVersion)
+            return major == other.major && minor == other.minor && build == other.build
+        return false
+    }
 
-    V1_8_9(47),
-    V1_8_8(47),
-    V1_8_7(47),
-    V1_8_6(47),
-    V1_8_5(47),
-    V1_8_4(47),
-    V1_8_3(47),
-    V1_8_2(47),
-    V1_8_1(47),
-    V1_8(47),
-    ;
+    override fun toString(): String {
+        return "MProtocolVersion(mc=$major.$minor.$build, protocol=$protocol)"
+    }
+
+    companion object {
+
+        @JvmField val V1_12_2 = MProtocolVersion(1, 12, 2, 340)
+        @JvmField val V1_12_1 = MProtocolVersion(1, 12, 1, 338)
+        @JvmField val V1_12 = MProtocolVersion(1, 12, 0, 335)
+
+        @JvmField val V1_11_2 = MProtocolVersion(1, 11, 2, 316)
+        @JvmField val V1_11_1 = MProtocolVersion(1, 11, 1, 316)
+        @JvmField val V1_11 = MProtocolVersion(1, 11, 0, 315)
+
+        @JvmField val V1_10_2 = MProtocolVersion(1, 10, 2, 210)
+        @JvmField val V1_10_1 = MProtocolVersion(1, 10, 1, 210)
+        @JvmField val V1_10 = MProtocolVersion(1, 10, 0, 210)
+
+        @JvmField val V1_9_4 = MProtocolVersion(1, 9, 4, 110)
+        @JvmField val V1_9_3 = MProtocolVersion(1, 9, 3, 110)
+        @JvmField val V1_9_2 = MProtocolVersion(1, 9, 2, 109)
+        @JvmField val V1_9_1 = MProtocolVersion(1, 9, 1, 108)
+        @JvmField val V1_9 = MProtocolVersion(1, 9, 0, 107)
+
+        @JvmField val V1_8_9 = MProtocolVersion(1, 8, 9, 47)
+        @JvmField val V1_8_8 = MProtocolVersion(1, 8, 8, 47)
+        @JvmField val V1_8_7 = MProtocolVersion(1, 8, 7, 47)
+        @JvmField val V1_8_6 = MProtocolVersion(1, 8, 6, 47)
+        @JvmField val V1_8_5 = MProtocolVersion(1, 8, 5, 47)
+        @JvmField val V1_8_4 = MProtocolVersion(1, 8, 4, 47)
+        @JvmField val V1_8_3 = MProtocolVersion(1, 8, 3, 47)
+        @JvmField val V1_8_2 = MProtocolVersion(1, 8, 2, 47)
+        @JvmField val V1_8_1 = MProtocolVersion(1, 8, 1, 47)
+        @JvmField val V1_8 = MProtocolVersion(1, 8, 0, 47)
+    }
 }

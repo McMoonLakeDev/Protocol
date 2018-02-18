@@ -38,7 +38,9 @@ import java.util.concurrent.LinkedBlockingQueue
 abstract class MConnectionAbstract(
         override val host: String,
         override val port: Int,
-        override val protocol: PacketProtocol) : SimpleChannelInboundHandler<Packet>(), MConnection {
+        override val protocol: PacketProtocol
+) : SimpleChannelInboundHandler<Packet>(),
+        MConnection {
 
     protected var isDisconnected: Boolean = false
 
@@ -62,7 +64,7 @@ abstract class MConnectionAbstract(
     override fun setProperty(key: String, value: Any)
             { properties0.put(key, value) }
 
-    open protected fun initializeProperties() { }
+    protected open fun initializeProperties() { }
 
     override val localAddress: SocketAddress?
         get() = channel?.localAddress()
@@ -77,7 +79,7 @@ abstract class MConnectionAbstract(
             refreshCompressionHandler(channel)
         }
 
-    open protected fun refreshCompressionHandler(channel: Channel?) {
+    protected open fun refreshCompressionHandler(channel: Channel?) {
         if(channel == null) return
         if(compressionThreshold0 >= 0) {
             if(channel.pipeline().get("compression") == null)
@@ -105,7 +107,7 @@ abstract class MConnectionAbstract(
             refreshWriteTimeoutHandler(channel)
         }
 
-    open protected fun refreshReadTimeoutHandler(channel: Channel?) {
+    protected open fun refreshReadTimeoutHandler(channel: Channel?) {
         if(channel == null) return
         if(readTimeout0 <= 0) {
             if(channel.pipeline().get("readTimeout") != null)
@@ -118,7 +120,7 @@ abstract class MConnectionAbstract(
         }
     }
 
-    open protected fun refreshWriteTimeoutHandler(channel: Channel?) {
+    protected open fun refreshWriteTimeoutHandler(channel: Channel?) {
         if(channel == null) return
         if(writeTimeout0 <= 0) {
             if(channel.pipeline().get("writeTimeout") != null)

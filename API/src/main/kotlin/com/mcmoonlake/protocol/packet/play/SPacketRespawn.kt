@@ -17,25 +17,37 @@
 
 package com.mcmoonlake.protocol.packet.play
 
-import com.mcmoonlake.protocol.auth.GameProfile
+import com.mcmoonlake.protocol.ofValuable
+import com.mcmoonlake.protocol.ofValuableNotNull
 import com.mcmoonlake.protocol.packet.PacketAbstract
 import com.mcmoonlake.protocol.packet.PacketBuffer
 import com.mcmoonlake.protocol.packet.PacketServer
-import java.util.*
+import com.mcmoonlake.protocol.wrapper.Difficulty
+import com.mcmoonlake.protocol.wrapper.Environment
+import com.mcmoonlake.protocol.wrapper.GameMode
+import com.mcmoonlake.protocol.wrapper.WorldType
 
-data class SPacketLoginSuccess(
-        var profile: GameProfile
+data class SPacketRespawn(
+        var dimension: Environment,
+        var difficulty: Difficulty,
+        var gameMode: GameMode,
+        var worldType: WorldType
 ) : PacketAbstract(),
         PacketServer {
 
-    constructor() : this(GameProfile(null as UUID?, "Unknown"))
+    constructor() : this(Environment.NORMAL, Difficulty.EASY, GameMode.SURVIVAL, WorldType.DEFAULT)
 
     override fun read(data: PacketBuffer) {
-        profile = GameProfile(UUID.fromString(data.readString()), data.readString())
+        dimension = ofValuableNotNull(data.readInt())
+        difficulty = ofValuableNotNull(data.readUnsignedByte().toInt())
+        gameMode = ofValuableNotNull(data.readUnsignedByte().toInt())
+        worldType = ofValuable(data.readString()) ?: WorldType.DEFAULT
     }
 
     override fun write(data: PacketBuffer) {
-        data.writeString(profile.id?.toString() ?: "")
-        data.writeString(profile.name)
+        data.writeInt(dimension.value())
+        data.writeByte(difficulty.value())
+        data.writeByte(gameMode.value())
+        data.writeString(worldType.value())
     }
 }

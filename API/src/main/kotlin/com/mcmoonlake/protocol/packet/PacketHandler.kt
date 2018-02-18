@@ -30,10 +30,9 @@ import io.netty.handler.codec.DecoderException
 import java.util.zip.Deflater
 import java.util.zip.Inflater
 
-
-
 class PacketCompressionHandler(
-        val connection: MConnection) : ByteToMessageCodec<ByteBuf>() {
+        val connection: MConnection
+) : ByteToMessageCodec<ByteBuf>() {
 
     companion object {
         @JvmStatic
@@ -90,7 +89,8 @@ class PacketCompressionHandler(
 }
 
 class PacketEncryptionHandler(
-        val connection: MConnection) : ByteToMessageCodec<ByteBuf>() {
+        val connection: MConnection
+) : ByteToMessageCodec<ByteBuf>() {
 
     private var decryptedBuffer = ByteArray(0)
     private var encryptedBuffer = ByteArray(0)
@@ -137,7 +137,8 @@ class PacketEncryptionHandler(
 }
 
 class PacketSizerHandler(
-        val connection: MConnection) : ByteToMessageCodec<ByteBuf>() {
+        val connection: MConnection
+) : ByteToMessageCodec<ByteBuf>() {
 
     override fun encode(ctx: ChannelHandlerContext?, msg: ByteBuf?, out: ByteBuf?) {
         if(msg == null || out == null) return
@@ -177,7 +178,8 @@ class PacketSizerHandler(
 }
 
 class PacketCodecHandler(
-        val connection: MConnection) : ByteToMessageCodec<Packet>() {
+        val connection: MConnection
+) : ByteToMessageCodec<Packet>() {
 
     private val protocolVer: MProtocolVersion by lazy {
         connection.getPropertyAs<MProtocolVersion>(Minecraft.KEY_PROTOCOL_VER)

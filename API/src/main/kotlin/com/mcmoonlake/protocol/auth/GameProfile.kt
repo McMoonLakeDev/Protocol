@@ -24,4 +24,17 @@ import java.util.*
 data class GameProfile(
         val id: UUID?,
         val name: String) {
+
+    val properties: List<Property> = ArrayList()
+    val isLegacy: Boolean = false
+
+    constructor(id: String?, name: String)
+            : this(if(id != null && id != "") UUID.fromString(id) else null, name)
+
+    fun getProperty(name: String): Property?
+            = properties.find { it.name == name }
+
+    override fun toString(): String {
+        return "GameProfile(id=$id, name=$name, properties=$properties, isLegacy=$isLegacy)"
+    }
 }

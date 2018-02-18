@@ -38,19 +38,33 @@ import java.net.Proxy
 
 interface MClientConnectionListener : MConnectionListener {
 
+    /**
+     * When connecting to the server successfully.
+     */
     fun onConnectedServer(event: ConnectedServerEvent)
 
+    /**
+     * When you receive a server ping response.
+     */
     fun onServerPingEvent(event: ServerPingEvent)
 }
 
-open class MClientConnectionListenerAdapter : MConnectionListenerAdapter(), MClientConnectionListener {
+open class MClientConnectionListenerAdapter
+    : MConnectionListenerAdapter(),
+        MClientConnectionListener {
 
     override fun onConnectedServer(event: ConnectedServerEvent) { }
 
     override fun onServerPingEvent(event: ServerPingEvent) { }
 }
 
-class MClientConnectionListenerDefault : MClientConnectionListenerAdapter() {
+class MClientConnectionListenerDefault
+    : MClientConnectionListenerAdapter() {
+
+    companion object {
+        @JvmField
+        var DEBUG = false
+    }
 
     ///
     // Minecraft Client Protocol Listener.
@@ -62,6 +76,9 @@ class MClientConnectionListenerDefault : MClientConnectionListenerAdapter() {
         val connection = event.connection as MClientConnection
         val protocol = connection.protocol
         val packet = event.packet
+
+        if(DEBUG)
+            println("[DEBUG][Packet] << $packet")
 
         // Plugin Message: http://wiki.vg/Plugin_channel
         if(packet is SPacketPayload) {
@@ -126,6 +143,9 @@ class MClientConnectionListenerDefault : MClientConnectionListenerAdapter() {
         val connection = event.connection as MClientConnection
         val packet = event.packet
 
+        if(DEBUG)
+            println("[DEBUG][Packet] >> $packet")
+
         // Plugin Message: http://wiki.vg/Plugin_channel
         if(packet is CPacketPayload) {
             val payloadEvent = PacketPayloadEvent(connection, PacketDirection.OUT, packet.channel, packet.data)
@@ -133,7 +153,7 @@ class MClientConnectionListenerDefault : MClientConnectionListenerAdapter() {
         }
     }
 
-    // When successfully join the server.
+    // When connected successfully.
     override fun onConnected(event: ConnectedEvent) {
         val connection = event.connection as MClientConnection
         val protocol = connection.protocol
@@ -143,7 +163,7 @@ class MClientConnectionListenerDefault : MClientConnectionListenerAdapter() {
             // Process structure: [-> Handshake] [-> Request] [<- Response] [-> Ping] [<- Pong]
             MProtocolType.STATUS -> {
                 protocol.setProtocolType(MProtocolType.HANDSHAKE, connection, true)
-                connection.sendPacket(CPacketHandshake(protocol.version.value, connection.host, connection.port, HandshakeIntent.STATUS))
+                connection.sendPacket(CPacketHandshake(protocol.version.value(), connection.host, connection.port, HandshakeIntent.STATUS))
                 protocol.setProtocolType(MProtocolType.STATUS, connection, true)
                 connection.sendPacket(CPacketStatusStart())
             }
@@ -153,7 +173,7 @@ class MClientConnectionListenerDefault : MClientConnectionListenerAdapter() {
                 val profile = connection.getPropertyAs<GameProfile>(Minecraft.KEY_PROFILE)
                         ?: throw IllegalStateException("Invalid profile when logging in to the session.")
                 protocol.setProtocolType(MProtocolType.HANDSHAKE, connection, true)
-                connection.sendPacket(CPacketHandshake(protocol.version.value, connection.host, connection.port, HandshakeIntent.LOGIN))
+                connection.sendPacket(CPacketHandshake(protocol.version.value(), connection.host, connection.port, HandshakeIntent.LOGIN))
                 protocol.setProtocolType(MProtocolType.LOGIN, connection, true)
                 connection.sendPacket(CPacketLoginStart(profile))
             }

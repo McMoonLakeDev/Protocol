@@ -22,7 +22,9 @@ import com.mcmoonlake.protocol.packet.PacketBuffer
 import com.mcmoonlake.protocol.packet.PacketServer
 
 data class SPacketStatusPong(
-        var id: Long) : PacketAbstract(), PacketServer {
+        var id: Long
+) : PacketAbstract(),
+        PacketServer {
 
     constructor() : this(System.currentTimeMillis())
 

@@ -27,7 +27,8 @@ interface ProtocolEvent {
 
 class PacketReceivingEvent(
         val connection: MConnection,
-        val packet: Packet) : ProtocolEvent {
+        val packet: Packet
+) : ProtocolEvent {
 
     override fun call(listener: MConnectionListener) {
         listener.onReceiving(this)
@@ -36,7 +37,8 @@ class PacketReceivingEvent(
 
 class PacketSendingEvent(
         val connection: MConnection,
-        val packet: Packet) : ProtocolEvent {
+        val packet: Packet
+) : ProtocolEvent {
 
     override fun call(listener: MConnectionListener) {
         listener.onSending(this)
@@ -52,7 +54,8 @@ class PacketPayloadEvent(
         val connection: MConnection,
         val direction: PacketDirection,
         val channel: String,
-        val data: PacketBuffer) : ProtocolEvent {
+        val data: PacketBuffer
+) : ProtocolEvent {
 
     override fun call(listener: MConnectionListener) {
         listener.onPayload(this)
@@ -60,7 +63,8 @@ class PacketPayloadEvent(
 }
 
 class ConnectedEvent(
-        val connection: MConnection) : ProtocolEvent {
+        val connection: MConnection
+) : ProtocolEvent {
 
     override fun call(listener: MConnectionListener) {
         listener.onConnected(this)
@@ -70,7 +74,8 @@ class ConnectedEvent(
 class DisconnectedEvent(
         val connection: MConnection,
         val reason: String,
-        val cause: Throwable?) : ProtocolEvent {
+        val cause: Throwable?
+) : ProtocolEvent {
 
     override fun call(listener: MConnectionListener) {
         listener.onDisconnected(this)

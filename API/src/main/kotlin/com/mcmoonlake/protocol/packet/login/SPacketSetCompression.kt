@@ -22,7 +22,9 @@ import com.mcmoonlake.protocol.packet.PacketBuffer
 import com.mcmoonlake.protocol.packet.PacketServer
 
 data class SPacketSetCompression(
-        var threshold: Int) : PacketAbstract(), PacketServer {
+        var threshold: Int
+) : PacketAbstract(),
+        PacketServer {
 
     constructor() : this(256)
 
