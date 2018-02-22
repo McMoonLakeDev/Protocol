@@ -87,10 +87,17 @@ open class MProtocol(
         registerOutgoingPacket(0x01, CPacketEncryptionResponse::class.java)
     }
     private fun initPlay(connection: MConnection, isClient: Boolean) {
-        // TODO Play
+        // TODO Play & Compatibility
+        registerIncomingPacket(0x0D, SPacketServerDifficulty::class.java)
+        registerIncomingPacket(0x0F, SPacketChatMessage::class.java)
         registerIncomingPacket(0x18, SPacketPayload::class.java)
+        registerIncomingPacket(0X1B, SPacketEntityStatus::class.java)
         registerIncomingPacket(0x23, SPacketJoinGame::class.java)
+        registerIncomingPacket(0x2C, SPacketAbilities::class.java)
+        registerIncomingPacket(0x2E, SPacketPlayerInfo::class.java)
+        registerIncomingPacket(0x31, SPacketRecipes::class.java) // 1.12+
         registerIncomingPacket(0x35, SPacketRespawn::class.java)
+        registerIncomingPacket(0x3A, SPacketHeldItemSlot::class.java)
         registerOutgoingPacket(0x02, CPacketChatMessage::class.java)
         registerOutgoingPacket(0x09, CPacketPayload::class.java)
     }

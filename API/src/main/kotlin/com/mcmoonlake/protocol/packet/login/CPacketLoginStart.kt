@@ -35,7 +35,7 @@ data class CPacketLoginStart(
     }
 
     override fun write(data: PacketBuffer) {
-        data.writeString(profile.name)
+        data.writeString(profile.name ?: "Unknown")
     }
 
     override val isPriority: Boolean

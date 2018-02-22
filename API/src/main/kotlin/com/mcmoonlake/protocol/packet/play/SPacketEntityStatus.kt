@@ -17,25 +17,24 @@
 
 package com.mcmoonlake.protocol.packet.play
 
-import com.mcmoonlake.protocol.auth.GameProfile
 import com.mcmoonlake.protocol.packet.PacketAbstract
 import com.mcmoonlake.protocol.packet.PacketBuffer
 import com.mcmoonlake.protocol.packet.PacketServer
-import java.util.*
 
-data class SPacketLoginSuccess(
-        var profile: GameProfile
-) : PacketAbstract(),
-        PacketServer {
+data class SPacketEntityStatus(
+        var entityId: Int,
+        var status: Byte
+) : PacketAbstract(), PacketServer {
 
-    constructor() : this(GameProfile(null as UUID?, "Unknown"))
+    constructor() : this(-1, -1)
 
     override fun read(data: PacketBuffer) {
-        profile = GameProfile(UUID.fromString(data.readString()), data.readString())
+        entityId = data.readInt()
+        status = data.readByte()
     }
 
     override fun write(data: PacketBuffer) {
-        data.writeString(profile.id?.toString() ?: "")
-        data.writeString(profile.name ?: "Unknown")
+        data.writeInt(entityId)
+        data.writeByte(status)
     }
 }

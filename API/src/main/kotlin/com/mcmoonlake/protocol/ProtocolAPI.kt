@@ -27,6 +27,7 @@ import com.mcmoonlake.protocol.chat.ChatColor
 import com.mcmoonlake.protocol.util.Enums
 import java.io.Reader
 
+@JvmOverloads
 fun <T> T?.notNull(message: String = "验证的对象值为 null 时异常."): T
         = this ?: throw IllegalArgumentException(message)
 

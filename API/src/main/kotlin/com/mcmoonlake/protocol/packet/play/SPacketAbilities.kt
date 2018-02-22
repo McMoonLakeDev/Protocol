@@ -17,25 +17,43 @@
 
 package com.mcmoonlake.protocol.packet.play
 
-import com.mcmoonlake.protocol.auth.GameProfile
 import com.mcmoonlake.protocol.packet.PacketAbstract
 import com.mcmoonlake.protocol.packet.PacketBuffer
 import com.mcmoonlake.protocol.packet.PacketServer
-import java.util.*
 
-data class SPacketLoginSuccess(
-        var profile: GameProfile
-) : PacketAbstract(),
-        PacketServer {
+data class SPacketAbilities(
+        var isInvulnerable: Boolean,
+        var isFlying: Boolean,
+        var canFly: Boolean,
+        var canInstantlyBuild: Boolean,
+        var flySpeed: Float,
+        var walkSpeed: Float
+) : PacketAbstract(), PacketServer {
 
-    constructor() : this(GameProfile(null as UUID?, "Unknown"))
+    constructor() : this(false, false, false, false, .05f, .1f)
 
     override fun read(data: PacketBuffer) {
-        profile = GameProfile(UUID.fromString(data.readString()), data.readString())
+        val flag = data.readByte().toInt()
+        isInvulnerable = flag and 1 > 0
+        isFlying = flag and 2 > 0
+        canFly = flag and 4 > 0
+        canInstantlyBuild = flag and 8 > 0
+        flySpeed = data.readFloat()
+        walkSpeed = data.readFloat()
     }
 
     override fun write(data: PacketBuffer) {
-        data.writeString(profile.id?.toString() ?: "")
-        data.writeString(profile.name ?: "Unknown")
+        var flag = 0
+        if(isInvulnerable)
+            flag = flag or 1
+        if(isFlying)
+            flag = flag or 2
+        if(canFly)
+            flag = flag or 4
+        if(canInstantlyBuild)
+            flag = flag or 8
+        data.writeByte(flag)
+        data.writeFloat(flySpeed)
+        data.writeFloat(walkSpeed)
     }
 }

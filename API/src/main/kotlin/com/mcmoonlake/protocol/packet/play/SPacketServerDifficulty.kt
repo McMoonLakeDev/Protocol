@@ -17,25 +17,23 @@
 
 package com.mcmoonlake.protocol.packet.play
 
-import com.mcmoonlake.protocol.auth.GameProfile
+import com.mcmoonlake.protocol.ofValuableNotNull
 import com.mcmoonlake.protocol.packet.PacketAbstract
 import com.mcmoonlake.protocol.packet.PacketBuffer
 import com.mcmoonlake.protocol.packet.PacketServer
-import java.util.*
+import com.mcmoonlake.protocol.wrapper.Difficulty
 
-data class SPacketLoginSuccess(
-        var profile: GameProfile
-) : PacketAbstract(),
-        PacketServer {
+data class SPacketServerDifficulty(
+        var difficulty: Difficulty
+) : PacketAbstract(), PacketServer {
 
-    constructor() : this(GameProfile(null as UUID?, "Unknown"))
+    constructor() : this(Difficulty.EASY)
 
     override fun read(data: PacketBuffer) {
-        profile = GameProfile(UUID.fromString(data.readString()), data.readString())
+        difficulty = ofValuableNotNull(data.readUnsignedByte().toInt())
     }
 
     override fun write(data: PacketBuffer) {
-        data.writeString(profile.id?.toString() ?: "")
-        data.writeString(profile.name ?: "Unknown")
+        data.writeByte(difficulty.value())
     }
 }

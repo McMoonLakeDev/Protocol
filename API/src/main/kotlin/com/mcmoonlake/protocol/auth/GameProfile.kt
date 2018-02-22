@@ -23,9 +23,9 @@ import java.util.*
 
 data class GameProfile(
         val id: UUID?,
-        val name: String) {
+        val name: String?) {
 
-    val properties: List<Property> = ArrayList()
+    val properties: MutableList<Property> = ArrayList()
     val isLegacy: Boolean = false
 
     constructor(id: String?, name: String)

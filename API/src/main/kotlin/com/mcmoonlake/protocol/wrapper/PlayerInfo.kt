@@ -15,27 +15,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.mcmoonlake.protocol.packet.play
+package com.mcmoonlake.protocol.wrapper
 
 import com.mcmoonlake.protocol.auth.GameProfile
-import com.mcmoonlake.protocol.packet.PacketAbstract
-import com.mcmoonlake.protocol.packet.PacketBuffer
-import com.mcmoonlake.protocol.packet.PacketServer
+import com.mcmoonlake.protocol.chat.ChatComponent
+import com.mcmoonlake.protocol.chat.ChatSerializer
 import java.util.*
 
-data class SPacketLoginSuccess(
-        var profile: GameProfile
-) : PacketAbstract(),
-        PacketServer {
+data class PlayerInfo(
+        val profile: GameProfile,
+        val displayName: ChatComponent?,
+        val mode: GameMode?,
+        val latency: Int
+) {
 
-    constructor() : this(GameProfile(null as UUID?, "Unknown"))
+    constructor(id: UUID, displayName: String?, mode: GameMode? = GameMode.SURVIVAL, latency: Int = 0)
+            : this(GameProfile(id, null), ChatSerializer.fromRawOrNull(displayName), mode, latency)
 
-    override fun read(data: PacketBuffer) {
-        profile = GameProfile(UUID.fromString(data.readString()), data.readString())
-    }
-
-    override fun write(data: PacketBuffer) {
-        data.writeString(profile.id?.toString() ?: "")
-        data.writeString(profile.name ?: "Unknown")
-    }
+    @JvmOverloads
+    constructor(id: UUID, name: String, displayName: String? = null, mode: GameMode? = GameMode.SURVIVAL, latency: Int = 0)
+            : this(GameProfile(id, name), ChatSerializer.fromRawOrNull(displayName), mode, latency)
 }

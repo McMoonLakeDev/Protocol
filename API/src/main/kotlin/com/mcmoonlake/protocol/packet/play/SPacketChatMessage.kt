@@ -17,25 +17,30 @@
 
 package com.mcmoonlake.protocol.packet.play
 
-import com.mcmoonlake.protocol.auth.GameProfile
+import com.mcmoonlake.protocol.chat.ChatAction
+import com.mcmoonlake.protocol.chat.ChatComponent
+import com.mcmoonlake.protocol.chat.ChatSerializer
+import com.mcmoonlake.protocol.ofValuableNotNull
 import com.mcmoonlake.protocol.packet.PacketAbstract
 import com.mcmoonlake.protocol.packet.PacketBuffer
 import com.mcmoonlake.protocol.packet.PacketServer
-import java.util.*
 
-data class SPacketLoginSuccess(
-        var profile: GameProfile
+data class SPacketChatMessage(
+        var message: ChatComponent,
+        var action: ChatAction
 ) : PacketAbstract(),
         PacketServer {
 
-    constructor() : this(GameProfile(null as UUID?, "Unknown"))
+    constructor() : this(ChatComponent.NULL, ChatAction.CHAT)
+    constructor(message: String) : this(ChatSerializer.fromRaw(message), ChatAction.CHAT)
 
     override fun read(data: PacketBuffer) {
-        profile = GameProfile(UUID.fromString(data.readString()), data.readString())
+        message = ChatSerializer.fromJsonLenient(data.readString())
+        action = ofValuableNotNull(data.readByte().toInt())
     }
 
     override fun write(data: PacketBuffer) {
-        data.writeString(profile.id?.toString() ?: "")
-        data.writeString(profile.name ?: "Unknown")
+        data.writeString(message.toJson())
+        data.writeByte(action.value())
     }
 }

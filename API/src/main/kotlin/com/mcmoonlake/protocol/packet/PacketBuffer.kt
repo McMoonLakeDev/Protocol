@@ -17,6 +17,8 @@
 
 package com.mcmoonlake.protocol.packet
 
+import com.mcmoonlake.protocol.chat.ChatComponent
+import com.mcmoonlake.protocol.chat.ChatSerializer
 import io.netty.buffer.ByteBuf
 import io.netty.buffer.Unpooled
 import java.nio.charset.Charset
@@ -125,6 +127,9 @@ data class PacketBuffer(
         return this
     }
 
+    fun writeChatComponent(value: ChatComponent): PacketBuffer
+            { writeString(value.toJson()); return this; }
+
     fun writeBoolean(value: Boolean): PacketBuffer
             { byteBuf.writeBoolean(value); return this; }
 
@@ -223,6 +228,9 @@ data class PacketBuffer(
         }
         return value or ((b and 0x7F) shl (size * 7)).toLong()
     }
+
+    fun readChatComponent(): ChatComponent
+            = ChatSerializer.fromJsonLenient(readString())
 
     fun readBoolean(): Boolean
             = byteBuf.readBoolean()
